@@ -1,0 +1,85 @@
+import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'firebase_options.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  runApp(const MyApp());
+}
+
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: AppBar(title: Text(' Firebase ')),
+        body: Center(
+          child: Column(
+            children: [
+              const Text('Firebase Example'),
+              ElevatedButton(
+                  onPressed: () {
+                    saveData();
+                  },
+                  child: Text("Save ")),
+              ElevatedButton(
+                  onPressed: () {
+                    getData();
+                  },
+                  child: Text("Get ")),
+              ElevatedButton(
+                  onPressed: () {
+                    updateData();
+                  },
+                  child: Text("Update")),
+              ElevatedButton(
+                  onPressed: () {
+                    deleteData();
+                  },
+                  child: Text("Delete ")),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  saveData() async {
+    final CollectionReference todoList =
+        FirebaseFirestore.instance.collection('todo_list');
+    await todoList.add({"todo_title": "Test", "todo_details": "Test1"});
+    print("Record Added: ${todoList.id} ");
+  }
+
+  getData() async {
+    final CollectionReference todoList =
+        FirebaseFirestore.instance.collection('todo_list');
+    print(todoList.toString());
+  }
+
+  updateData() async {
+    final CollectionReference todoList =
+        FirebaseFirestore.instance.collection('todo_list');
+    await todoList
+        .doc("JQ4Bt07I25VEHwh8DbyL")
+        .update({"todo_title": "Updated1", "todo_details": "Updated2"});
+    print("Record Updated ");
+  }
+
+  deleteData() async {
+    final CollectionReference todoList =
+        FirebaseFirestore.instance.collection('todo_list');
+    await todoList.doc("JQ4Bt07I25VEHwh8DbyL").delete();
+    print("Record Deleted ");
+  }
+}
